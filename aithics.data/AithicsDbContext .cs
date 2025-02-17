@@ -1,4 +1,5 @@
-﻿using aithics.data.Models;
+﻿using aithics.data.Data;
+using aithics.data.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Runtime;

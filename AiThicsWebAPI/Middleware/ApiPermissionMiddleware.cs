@@ -13,8 +13,16 @@ namespace aithics.api.Middleware
 
         public async Task InvokeAsync(HttpContext context, IApiPermissionService permissionService)
         {
+            var apiEndpoint = context.Request.Path.Value.ToLower();
+
+            // Exclude Login & Register APIs from Middleware
+            if (apiEndpoint.Contains("/api/auth/login"))
+            {
+                await _next(context);
+                return;
+            }
+
             var userId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var apiEndpoint = context.Request.Path.Value;
 
             if (!string.IsNullOrEmpty(userId) && long.TryParse(userId, out long uid))
             {
@@ -29,5 +37,6 @@ namespace aithics.api.Middleware
 
             await _next(context);
         }
+
     }
 }

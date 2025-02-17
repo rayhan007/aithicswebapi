@@ -2,6 +2,7 @@
 using aithics.service.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using aithics.data;
+using aithics.data.Data;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -30,12 +31,23 @@ namespace aithics.service.Services
 
         public async Task<string> LoginAsync(string email, string password)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
-            var aa= BCrypt.Net.BCrypt.Verify("Rayhan007", "RtUTR");
-            if (user == null || !VerifyPassword(password, user.PasswordHash))
-                return "Invalid login attempt";
+            try
+            {
+                var user = await _context.Users.SingleAsync(u => u.Email == email);      
 
-            return GenerateJwtToken(user);
+
+                if (user == null || !VerifyPassword(password, user.PasswordHash))
+                    return "Invalid login attempt";
+
+                return GenerateJwtToken(user);
+            }
+
+            catch(Exception ex) 
+            
+            {
+                return "Invalid login attempt";
+            }
+           
         }
 
         private bool VerifyPassword(string password, string storedHash)
@@ -53,12 +65,12 @@ namespace aithics.service.Services
             };
 
             var token = new JwtSecurityToken(
-                issuer: "your-issuer",
-                audience: "your-audience",
+                issuer: "https://portal.aithics.net",
+                audience: "https://api.aithics.net",
                 claims: authClaims,
                 expires: DateTime.UtcNow.AddMinutes(15),
                 signingCredentials: new SigningCredentials(
-                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes("your-secret-key")),
+                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(env.Jwt_Key)),
                     SecurityAlgorithms.HmacSha256)
             );
 

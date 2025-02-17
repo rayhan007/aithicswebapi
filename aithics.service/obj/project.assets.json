@@ -1394,11 +1394,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Rayhan\\Documents\\PJ\\AithicsWebApiSolution\\AiThicsWebAPI\\aithics.service\\aithics.service.csproj",
+      "projectUniqueName": "C:\\Users\\Rayhan\\Documents\\PJ\\aithicswebapi\\aithics.service\\aithics.service.csproj",
       "projectName": "aithics.service",
-      "projectPath": "C:\\Users\\Rayhan\\Documents\\PJ\\AithicsWebApiSolution\\AiThicsWebAPI\\aithics.service\\aithics.service.csproj",
+      "projectPath": "C:\\Users\\Rayhan\\Documents\\PJ\\aithicswebapi\\aithics.service\\aithics.service.csproj",
       "packagesPath": "C:\\Users\\Rayhan\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Rayhan\\Documents\\PJ\\AithicsWebApiSolution\\AiThicsWebAPI\\aithics.service\\obj\\",
+      "outputPath": "C:\\Users\\Rayhan\\Documents\\PJ\\aithicswebapi\\aithics.service\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -1420,8 +1420,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\Rayhan\\Documents\\PJ\\AithicsWebApiSolution\\AiThicsWebAPI\\aithics.data\\aithics.data.csproj": {
-              "projectPath": "C:\\Users\\Rayhan\\Documents\\PJ\\AithicsWebApiSolution\\AiThicsWebAPI\\aithics.data\\aithics.data.csproj"
+            "C:\\Users\\Rayhan\\Documents\\PJ\\aithicswebapi\\aithics.data\\aithics.data.csproj": {
+              "projectPath": "C:\\Users\\Rayhan\\Documents\\PJ\\aithicswebapi\\aithics.data\\aithics.data.csproj"
             }
           }
         }

@@ -1,5 +1,6 @@
 using aithics.api.Middleware;
 using aithics.data;
+using aithics.data.Data;
 using aithics.service.Interfaces;
 using aithics.service.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -31,14 +32,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = Environment.GetEnvironmentVariable("Jwt_Issuer"),
-            ValidAudience = Environment.GetEnvironmentVariable("Jwt_Audience"),
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("Jwt_Key")))
-
+            ValidIssuer = env.Jwt_Issuer,
+            ValidAudience = env.Jwt_Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(env.Jwt_Key))
         };
     });
 
-// Enable Rate Limiting (Prevents brute-force attacks)
+// Register Authorization
+builder.Services.AddAuthorization();
+
+// Enable Rate Limiting
 builder.Services.AddRateLimiter(options =>
 {
     options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
@@ -90,14 +93,12 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-builder.Services.AddControllers(); // Fix: Register MVC Controllers
-builder.Services.AddEndpointsApiExplorer();  // Required for minimal API exploration
-builder.Services.AddSwaggerGen();  //Registers Swagger Generator
-// Register Authentication & Authorization Services
-builder.Services.AddAuthentication(); // If using authentication
-builder.Services.AddAuthorization();  // Fix for missing authorization services
+// Register Controllers
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
+
 // Enable Swagger UI in Development Mode
 if (app.Environment.IsDevelopment())
 {
@@ -111,14 +112,17 @@ app.UseHttpsRedirection();
 app.UseCors("CorsPolicy");
 
 // Enable Middleware & Security Features
+app.UseRouting();  // Enable routing
+
+app.UseAuthentication();  // Apply authentication middleware
+app.UseAuthorization();   // Apply authorization middleware
+
+app.UseRateLimiter();  // Apply rate limiting
+
+// Your custom middleware for API permission check
 app.UseMiddleware<ApiPermissionMiddleware>();
-app.UseAuthentication();
-app.UseAuthorization();
-app.UseRateLimiter();
 
-// Enable Swagger UI
-app.UseSwagger();
-app.UseSwaggerUI();
-
+// Map controllers
 app.MapControllers();
+
 app.Run();

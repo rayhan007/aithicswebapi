@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "8vf4azX4zyo=",
+  "dgSpecHash": "c5ozADdXlxE=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Rayhan\\Documents\\PJ\\AithicsWebApiSolution\\AiThicsWebAPI\\aithics.service\\aithics.service.csproj",
+  "projectFilePath": "C:\\Users\\Rayhan\\Documents\\PJ\\aithicswebapi\\aithics.service\\aithics.service.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Rayhan\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\Rayhan\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\8.0.13\\microsoft.aspnetcore.authentication.jwtbearer.8.0.13.nupkg.sha512",

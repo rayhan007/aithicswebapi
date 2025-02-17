@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("aithics.service")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+02c48a620121ebcab91c618ef9aaf253d4877d58")]
 [assembly: System.Reflection.AssemblyProductAttribute("aithics.service")]
 [assembly: System.Reflection.AssemblyTitleAttribute("aithics.service")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
