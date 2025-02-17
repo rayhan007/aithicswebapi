@@ -13,30 +13,33 @@ namespace aithics.api.Middleware
 
         public async Task InvokeAsync(HttpContext context, IApiPermissionService permissionService)
         {
-            var apiEndpoint = context.Request.Path.Value.ToLower();
+            //if (!context.User.Identity.IsAuthenticated)
+            //{
+            //    await _next(context); // ✅ Allow unauthenticated users to hit authentication endpoints
+            //    return;
+            //}
 
-            // Exclude Login & Register APIs from Middleware
-            if (apiEndpoint.Contains("/api/auth/login"))
+            var userId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var apiEndpoint = context.Request.Path.Value;
+
+            if (string.IsNullOrEmpty(userId) || !long.TryParse(userId, out long uid))
             {
+                Console.WriteLine("❌ UserID is NULL, skipping permission check.");
                 await _next(context);
                 return;
             }
 
-            var userId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (!string.IsNullOrEmpty(userId) && long.TryParse(userId, out long uid))
+            var hasAccess = await permissionService.UserHasAccessAsync(uid, apiEndpoint);
+            if (!hasAccess)
             {
-                var hasAccess = await permissionService.UserHasAccessAsync(uid, apiEndpoint);
-                if (!hasAccess)
-                {
-                    context.Response.StatusCode = StatusCodes.Status403Forbidden;
-                    await context.Response.WriteAsync("Forbidden: You do not have access to this API.");
-                    return;
-                }
+                context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                await context.Response.WriteAsync("Forbidden: You do not have access to this API.");
+                return;
             }
 
             await _next(context);
         }
+
 
     }
 }

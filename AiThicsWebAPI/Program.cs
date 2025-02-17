@@ -1,4 +1,4 @@
-using aithics.api.Middleware;
+﻿using aithics.api.Middleware;
 using aithics.data;
 using aithics.data.Data;
 using aithics.service.Interfaces;
@@ -20,21 +20,38 @@ builder.Services.AddDbContext<AithicsDbContext>(options =>
 // Register Services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IApiPermissionService, ApiPermissionService>();
+builder.Services.AddScoped<ISleepTrackerService, SleepTrackerService>();
 
 // Configure Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.RequireHttpsMetadata = true;
+        options.RequireHttpsMetadata = false;  // ✅ Allow HTTP for local testing
         options.SaveToken = true;
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
             ValidateAudience = true,
+            ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = env.Jwt_Issuer,
-            ValidAudience = env.Jwt_Audience,
+            ValidIssuer = env.Jwt_Issuer,   // ✅ Replace with your actual issuer
+            ValidAudience = env.Jwt_Audience,   // ✅ Replace with your actual audience
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(env.Jwt_Key))
+        };
+
+        // ✅ Enable Debug Logging for JWT
+        options.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = context =>
+            {
+                Console.WriteLine("❌ JWT Authentication Failed: " + context.Exception.Message);
+                return Task.CompletedTask;
+            },
+            OnTokenValidated = context =>
+            {
+                Console.WriteLine("✅ JWT Token Validated Successfully");
+                return Task.CompletedTask;
+            }
         };
     });
 
@@ -47,7 +64,7 @@ builder.Services.AddRateLimiter(options =>
     options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
         RateLimitPartition.GetFixedWindowLimiter("global", partition => new FixedWindowRateLimiterOptions
         {
-            PermitLimit = 5, // Max 5 requests per minute
+            PermitLimit = 15, // Max 5 requests per minute
             Window = TimeSpan.FromMinutes(1)
         }));
 });
@@ -91,6 +108,8 @@ builder.Services.AddSwaggerGen(options =>
             new string[] { }
         }
     });
+
+
 });
 
 // Register Controllers

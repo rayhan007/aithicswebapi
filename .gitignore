@@ -1,8 +1,7 @@
 /aithics.data/bin
 /aithics.data/obj
-
-/aithics.service/bin
-/aithics.service/obj
-
 /AiThicsWebAPI/bin
 /AiThicsWebAPI/obj
+/aithics.service/obj
+/aithics.service/obj
+/.vs

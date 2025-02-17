@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace aithics.data.Models
 {
-    [Table("APIlisting")]
-    public class APIlisting
+    [Table("APIListing")]
+    public class APIListing
     {
         [Key]
         public int APIListingId { get; set; }

@@ -1,4 +1,5 @@
-﻿using aithics.service.Interfaces;
+﻿using aithics.data.DomainModels;
+using aithics.service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace aithics.api.Controllers
@@ -19,8 +20,7 @@ namespace aithics.api.Controllers
         {
             var result = await _authService.RegisterUserAsync(new aithics.data.Models.User
             {
-                FullName = model.FullName,
-                UserName = model.UserName,
+                FullName = model.FullName,               
                 Email = model.Email
             }, model.Password);
 
@@ -37,17 +37,7 @@ namespace aithics.api.Controllers
         }
     }
 
-    public class RegisterModel
-    {
-        public string FullName { get; set; }
-        public string UserName { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
-    }
+   
 
-    public class LoginModel
-    {
-        public string Email { get; set; }
-        public string Password { get; set; }
-    }
+
 }

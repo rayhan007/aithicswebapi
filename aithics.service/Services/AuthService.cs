@@ -59,14 +59,14 @@ namespace aithics.service.Services
         {
             var authClaims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Name, user.Email),
                 new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
             var token = new JwtSecurityToken(
-                issuer: "https://portal.aithics.net",
-                audience: "https://api.aithics.net",
+                issuer: env.Jwt_Issuer,
+                audience: env.Jwt_Audience,
                 claims: authClaims,
                 expires: DateTime.UtcNow.AddMinutes(15),
                 signingCredentials: new SigningCredentials(

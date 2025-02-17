@@ -16,7 +16,8 @@ namespace aithics.data
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
-        public DbSet<APIlisting> APIlistings { get; set; }
+        public DbSet<APIListing> APIlistings { get; set; }
         public DbSet<RoleToAPI> RoleToAPIs { get; set; }
+        public DbSet<SleepTracker> SleepTrackers { get; set; }
     }
 }
