@@ -25,12 +25,13 @@ namespace aithics.api.Controllers
         // [Authorize]     // Can be called individually also without calling at header(line no 11)
 
         [HttpGet("all")]
+
         public async Task<ActionResult<IEnumerable<SleepTracker>>> GetAllSleepRecords()
         {
             var records = await _sleepTrackerService.GetAllSleepRecordsAsync();
             return Ok(records);
         }
 
-        
+
     }
 }

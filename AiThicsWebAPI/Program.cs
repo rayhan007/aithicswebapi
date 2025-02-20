@@ -42,10 +42,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         // ✅ Enable Debug Logging for JWT
         options.Events = new JwtBearerEvents
         {
-            OnAuthenticationFailed = context =>
+            OnAuthenticationFailed = async context =>
             {
                 Console.WriteLine("❌ JWT Authentication Failed: " + context.Exception.Message);
-                return Task.CompletedTask;
+
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                context.Response.ContentType = "application/json";
+                var errorMessage = new { message = "Invalid or expired token. Please login again." };
+                await context.Response.WriteAsJsonAsync(errorMessage);
             },
             OnTokenValidated = context =>
             {
@@ -64,19 +68,23 @@ builder.Services.AddRateLimiter(options =>
     options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
         RateLimitPartition.GetFixedWindowLimiter("global", partition => new FixedWindowRateLimiterOptions
         {
-            PermitLimit = 15, // Max 5 requests per minute
+            PermitLimit = 5, // Max 5 requests per minute
             Window = TimeSpan.FromMinutes(1)
         }));
 });
 
 // CORS Protection
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy",
-        policy => policy.WithOrigins("https://localhost:7124")
+        policy => policy.WithOrigins("https://localhost:7124",
+                                     "https://api.aithics.net") // Multiple allowed origins
                         .WithMethods("GET", "POST", "PUT", "DELETE")
-                        .WithHeaders("Authorization", "Content-Type"));
+                        .WithHeaders("Authorization", "Content-Type")
+                        .AllowCredentials());
 });
+
 
 // Enable Swagger with JWT Support
 builder.Services.AddSwaggerGen(options =>

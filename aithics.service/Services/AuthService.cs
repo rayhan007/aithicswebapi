@@ -68,7 +68,7 @@ namespace aithics.service.Services
                 issuer: env.Jwt_Issuer,
                 audience: env.Jwt_Audience,
                 claims: authClaims,
-                expires: DateTime.UtcNow.AddMinutes(15),
+                expires: DateTime.UtcNow.AddMinutes(30),
                 signingCredentials: new SigningCredentials(
                     new SymmetricSecurityKey(Encoding.UTF8.GetBytes(env.Jwt_Key)),
                     SecurityAlgorithms.HmacSha256)
@@ -76,5 +76,41 @@ namespace aithics.service.Services
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+        public async Task<string> GenerateRefreshTokenAsync(long userId)
+        {
+            var refreshToken = BCrypt.Net.BCrypt.HashPassword(Guid.NewGuid().ToString());
+
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null) 
+                return string.Empty;
+
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7); // Refresh token valid for 7 days
+            await _context.SaveChangesAsync();
+
+            return refreshToken;
+        }
+
+        public async Task<string> RefreshAccessTokenAsync(string refreshToken)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
+            if (user == null || user.RefreshTokenExpiryTime < DateTime.UtcNow)
+                return "Invalid refresh token";
+
+            return GenerateJwtToken(user);
+        }
+        public async Task<bool> LogoutAsync(long userId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null) return false;
+
+            user.RefreshToken = null;
+            user.RefreshTokenExpiryTime = null;
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
     }
 }
